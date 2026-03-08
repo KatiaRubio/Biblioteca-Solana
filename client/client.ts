@@ -1,4 +1,7 @@
 // Client
-console.log("My address:", pg.wallet.publicKey.toString());
+
+console.log("Direccion de la tienda de cosmeticos:", pg.wallet.publicKey.toString());
+
 const balance = await pg.connection.getBalance(pg.wallet.publicKey);
-console.log(`My balance: ${balance / web3.LAMPORTS_PER_SOL} SOL`);
+
+console.log(`Balance disponible para la tienda de cosmeticos: ${balance / web3.LAMPORTS_PER_SOL} SOL`);
