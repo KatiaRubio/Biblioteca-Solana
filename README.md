@@ -1,60 +1,141 @@
-# Biblioteca en Solana
+BeautyChain — Gestión de Cosméticos en Solana
 
-![banner](./images/banner-biblioteca.jpg)
+BeautyChain es un smart contract desarrollado en Rust utilizando el framework Anchor sobre la red blockchain de Solana. El proyecto tiene como finalidad crear un sistema descentralizado que permita a una tienda de belleza registrar y administrar su inventario de cosméticos directamente en la blockchain.
 
-CRUD básico de un Solana Program desarrollado con Rust y Anchor desde el Solana Playground. 
+A diferencia de los sistemas tradicionales que almacenan información en servidores centralizados, este programa guarda los datos dentro de cuentas del programa en Solana, lo que garantiza mayor seguridad, transparencia y permanencia de la información.
 
-Puedes comenzar dándole Fork a este repositorio (abajo te explicamos como 👇), **hemos preparado un entorno de codespaces listo para que no tengas que instalar nada**, solo déjate llevar por la fluidez de los ejercicios y temas desarrollados especialmente para ti. 
+Propósito del sistema
 
-Asegúrate de clonar este repositorio a tu cuenta usando el botón **`Fork`**.
+El proyecto busca demostrar cómo la tecnología blockchain puede utilizarse para administrar inventarios digitales. En este caso, el sistema está enfocado en el registro y control de productos cosméticos dentro de una tienda.
 
-![fork](./images/fork.png)
+Entre las operaciones que permite realizar el programa se encuentran:
 
-## Importando el proyecto 
+Crear el registro de una tienda de cosméticos vinculada a una wallet
 
-Ya con el repositorio en tu cuenta lo siguiente que debes hacer copiar el `enlace de tu repositorio`, lo que se puede hacer directamente desdel navegador:
+Añadir nuevos productos al inventario
 
-![repo](./images/repo.png)
-Posteriormente, lo uniremos con el siguiente enlace en nuestro navegador de preferencia:
+Consultar la lista de cosméticos almacenados
 
-```url
-https://beta.solpg.io/
-```
+Cambiar la disponibilidad de un producto
 
-Lo que nos dará algo parecido a:
+Eliminar cosméticos del inventario
 
-![url](./images/url.png)
+Cada una de estas acciones se ejecuta mediante instrucciones del contrato inteligente, las cuales generan transacciones dentro de la red de Solana.
 
-Al pulsar enter seremos enviados al `Solana Playground` con nuestro proyecto abierto:
+Organización de los datos en la blockchain
 
-![pg](./images/pg.png)
+Dentro del programa, la información se organiza de manera jerárquica. Cada tienda está asociada a una wallet, y dentro de ella se almacena el inventario de productos.
 
-Para guardarlo solo damos clic en el boton `import` y asignamos un nombre:
+Ejemplo de la estructura lógica:
 
-![import](./images/import.png)
+Wallet del propietario
+│
+└── Cuenta de Tienda de Cosméticos
+     │
+     ├── Producto cosmético A
+     ├── Producto cosmético B
+     └── Producto cosmético C
 
-## Preparacion del entorno
+Esto permite que cada usuario mantenga su propio inventario independiente dentro de la red.
 
-Primero conectaremos el entorno con la devnet, lo que tambien procederá a la creación de una wallet. Para eso daremos clic en donde dice **Not Conected**:
+Modelos de datos utilizados
 
-![playground1](./images/playground1.png)
+El sistema utiliza dos estructuras principales para almacenar la información.
 
-Saldrá la siguiente ventana donde daremos en el botón **Continue**:
+TiendaCosmeticos
 
-![wallet](./images/wallet.png)
+Representa la cuenta principal donde se almacena el inventario del negocio.
 
-Como resultado se mostrará la siguiente información:
+Atributo | Tipo | Descripción
+owner | Pubkey | Dirección de la wallet propietaria
+nombre | String | Nombre del negocio o tienda
+cosmeticos | Vec | Lista de productos registrados
 
-![status](./images/status.png)
+Cosmetico
 
-* En verde: el estado de la conexión y el entorno al que se encuentra conectado
+Estructura que representa cada producto almacenado dentro del inventario.
 
-* En amarillo: la la dirección de la wallet conectada
+Atributo | Tipo | Descripción
+nombre | String | Nombre del cosmético
+marca | String | Marca del producto
+precio | u32 | Precio del artículo
+disponible | bool | Indica si el producto está disponible
 
-* En azul: la cantidad de tokens en la wallet
+Instrucciones del contrato inteligente
 
-> ℹ️ ¿Quieres ver el ejemplo de un "Hola Mundo" en Solana?. Da clic aquí: 👉 [Ver Ejemplo](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/build-deploy)
+El programa incluye diversas instrucciones que permiten interactuar con los datos almacenados en la blockchain.
 
-> ℹ️ ¿Cuentas con una Wallet de [Phantom](https://phantom.com/) que deseas importar?, Da clic aquí para ver como hacerlo: 
+crear_tienda(nombre)
+Inicializa una nueva tienda de cosméticos asociada a la wallet del usuario.
 
-👉 [Como Importar una Wallet](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/import-key-a-playground)
+agregar_cosmetico(nombre, marca, precio)
+Permite registrar un nuevo producto dentro del inventario.
+
+ver_cosmeticos()
+Muestra la lista completa de cosméticos almacenados.
+
+alternar_estado(nombre)
+Modifica el estado de disponibilidad de un producto.
+
+eliminar_cosmetico(nombre)
+Elimina un cosmético específico del inventario.
+
+Uso de Program Derived Addresses (PDA)
+
+Para la creación de cuentas dentro del programa se utilizan Program Derived Addresses, las cuales permiten generar direcciones únicas sin necesidad de claves privadas.
+
+En este caso, la cuenta de la tienda se genera usando las siguientes semillas:
+
+["tienda_cosmeticos", owner_pubkey]
+
+Esto permite que:
+
+Cada wallet tenga su propia tienda registrada
+
+Solo el propietario pueda modificar el inventario
+
+Los datos estén protegidos contra accesos no autorizados
+
+Ejecución del proyecto
+
+El programa puede ejecutarse fácilmente utilizando Solana Playground, una herramienta en línea que permite compilar y desplegar programas en la red de Solana.
+
+Pasos para probar el contrato:
+
+Abrir Solana Playground
+
+Copiar el código del programa en el archivo src/lib.rs
+
+Conectar una wallet en la red Devnet
+
+Compilar el programa con el botón Build
+
+Desplegarlo con Deploy
+
+Ejecutar las funciones disponibles desde la interfaz de pruebas
+
+Ejemplo de flujo de uso
+
+Un ejemplo de interacción con el sistema podría ser el siguiente:
+
+crear_tienda("Beauty Store")
+
+agregar_cosmetico("Labial Matte", "Maybelline", 250)
+
+agregar_cosmetico("Base Liquida", "L'Oréal", 300)
+
+alternar_estado("Labial Matte")
+
+eliminar_cosmetico("Labial Matte")
+
+Este flujo representa el registro de productos, modificación de disponibilidad y eliminación de un artículo dentro del inventario.
+
+Tecnologías utilizadas
+
+Tecnología | Función dentro del proyecto
+Solana | Plataforma blockchain donde se ejecuta el contrato
+Anchor | Framework para desarrollar programas en Solana
+Rust | Lenguaje de programación utilizado
+
+Autor
+Proyecto desarrollado como parte de la certificación de Solana
